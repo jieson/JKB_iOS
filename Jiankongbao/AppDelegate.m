@@ -7,12 +7,27 @@
 //
 
 #import "AppDelegate.h"
+#import "APService.h"
+#import "ViewController.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+//    self.window.rootViewController = [[[ViewController alloc] init] autorelease];
+    self.window.backgroundColor = [UIColor whiteColor];
+    [self.window makeKeyAndVisible];
+    
+    _tabBarController = [[[JKBTabBarController alloc] init] autorelease];
+    self.window.rootViewController = self.tabBarController;
+    
+    [APService
+     registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+                                         UIRemoteNotificationTypeSound |
+                                         UIRemoteNotificationTypeAlert)];
+    [APService setupWithOption:launchOptions];
+    
     return YES;
 }
 							
@@ -36,6 +51,28 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
+    //JPush Sdk Api
+    [APService registerDeviceToken:deviceToken];
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
+    //JPush Sdk Api
+    [APService handleRemoteNotification:userInfo];
+    
+    NSString *extral = [userInfo objectForKey:@"extralkey"];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"推送通知" message:extral delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    [alert show];
+    [alert release];
+    
+    //自定义操作
+    
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error{
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

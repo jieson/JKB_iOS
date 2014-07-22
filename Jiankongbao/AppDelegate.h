@@ -7,9 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STFU_UIAccessibilityLoader.h"
+#import "JKBTabBarController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
-@property (strong, nonatomic) UIWindow *window;
+@property (retain, nonatomic) UIWindow *window;
+@property (nonatomic, retain) JKBTabBarController *tabBarController;
 
 @end
